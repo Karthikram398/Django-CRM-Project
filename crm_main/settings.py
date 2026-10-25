@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!*ndp-(t$)0cgpl!q4bh^t^o%&*z8!=&g-*e+bocov1h#5zsux'
+# SECRET_KEY is supplied from the environment after local settings below.
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -150,6 +150,11 @@ try:
 except ImportError:
     pass
 
+# Environment configuration is authoritative; never reuse a committed signing key.
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+if not SECRET_KEY.strip():
+    raise ValueError("DJANGO_SECRET_KEY must be set to a new non-empty secret")
+
 LOGIN_REDIRECT_URL = 'dashboard'
 
 # This will print email in Console.
@@ -166,4 +171,6 @@ MESSAGE_TAGS = {
 }
 
 SOCIAL_AUTH_FACEBOOK_KEY = '565284834205523'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = 'c6b12784c9589a0b3bdfe33114a19688'  # App Secret
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ["SOCIAL_AUTH_FACEBOOK_SECRET"]
+if not SOCIAL_AUTH_FACEBOOK_SECRET.strip():
+    raise ValueError("SOCIAL_AUTH_FACEBOOK_SECRET must be set to the rotated app secret")
